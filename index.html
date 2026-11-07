@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rapor Karyawan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#f7f2e4;--card:#fff;--ink:#171717;--muted:#6d6a62;--line:#e7e1cf;--side:#111;--side-ink:#d9d6cd;--yellow:#f6dc7d;--blue:#c5d6f7;--pink:#f4c4e0;--green:#cfe9b4;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.45;padding-bottom:110px}
+h1,h2{margin:0;font-weight:700;text-wrap:balance}
+h1{font-size:24px}
+h2{font-size:18px}
+.label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.msg{font-size:14px;min-height:1.4em;margin:0}
+.msg.err{color:#b3261e}
+.msg.ok{color:#2e6b1f}
+[hidden]{display:none!important}
+.content{padding-top:16px;padding-bottom:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Sidebar divisi */
+.sidebar{background:var(--side);color:var(--side-ink);padding:14px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:8px}
+.sidebar .label{color:#8a877f}
+.nav{display:flex;gap:6px;overflow-x:auto}
+.nav button{white-space:nowrap;background:transparent;color:var(--side-ink);border:0;border-radius:999px;padding:12px 16px;min-height:44px;font:inherit;cursor:pointer}
+.nav button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:600}
+
+/* Header */
+.head{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+.grow{flex:1 1 200px;display:grid;gap:6px}
+.who{display:grid;gap:4px;justify-items:start}
+.toggle{width:44px;height:44px;border-radius:50%;border:0;background:var(--side);color:#fff;font:inherit;font-size:22px;cursor:pointer;flex:0 0 auto}
+
+/* Tombol, kartu, field */
+.btn{font:inherit;font-weight:600;background:var(--side);color:#fff;border:0;border-radius:999px;padding:12px 22px;cursor:pointer;min-height:44px;justify-self:start}
+.btn:disabled{opacity:.5}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink);padding:8px 16px;font-size:14px;min-height:0}
+.field{font:inherit;color:var(--ink);background:#fff;border:0;border-radius:14px;padding:13px 16px;width:100%;min-height:48px}
+.card{background:var(--card);border-radius:18px;padding:18px;display:grid;gap:12px;align-content:start;min-width:0}
+.card.kuning{background:var(--yellow)}
+.card.biru{background:var(--blue)}
+.card.pink{background:var(--pink)}
+.card.hijau{background:var(--green)}
+.stack{display:grid;gap:14px}
+.grid2{display:grid;gap:14px;grid-template-columns:1fr;align-items:start}
+.cards2{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.big{font-size:40px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.export{display:grid;gap:10px}
+
+/* Input nilai */
+.crit{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.crit:first-child{border-top:0;padding-top:0}
+.crit-nama{font-weight:600}
+.scale{display:flex;gap:8px}
+.scale button{flex:1 1 0;min-width:0;min-height:48px;font:inherit;font-weight:600;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.scale button[aria-pressed="true"]{background:var(--side);color:#fff;border-color:var(--side)}
+
+/* Badge, progres, daftar */
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;color:var(--ink);font-variant-numeric:tabular-nums}
+.badge.A{background:var(--green)}
+.badge.B{background:var(--blue)}
+.badge.C{background:var(--yellow)}
+.badge.D{background:var(--pink)}
+.donut-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.donut{width:150px;height:150px;border-radius:50%;position:relative;flex:0 0 auto}
+.hole{position:absolute;inset:26px;background:#fff;border-radius:50%;display:grid;place-items:center;align-content:center;text-align:center}
+.hole strong{font-size:24px}
+.hole span{font-size:12px;color:var(--muted)}
+.legend{display:grid;gap:8px}
+.legend-row{display:flex;gap:10px;align-items:center;font-size:14px}
+.legend-row strong{margin-left:auto;font-variant-numeric:tabular-nums}
+.sw{width:12px;height:12px;border-radius:4px;flex:0 0 auto}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:14px}
+.kv:first-child{border-top:0}
+.kv>span:first-child{font-weight:600}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:10px 6px;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap;vertical-align:middle}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* Menu bawah */
+.bottombar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--side);display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.bottombar button{font:inherit;font-weight:600;background:transparent;color:var(--side-ink);border:0;border-radius:999px;padding:12px 8px;min-height:48px;cursor:pointer}
+.bottombar button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+
+@media (min-width:900px){
+  .grid2{grid-template-columns:1fr 1.25fr}
+  .bottombar{left:50%;right:auto;width:min(560px,calc(100% - 40px));transform:translateX(-50%);border-radius:999px;bottom:16px;padding:6px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<section id="viewLogin" class="content" style="max-width:420px;margin:8vh auto 0">
+  <div class="card">
+    <div class="label">Login</div>
+    <h1>Masukkan nomor login</h1>
+    <input id="pin" class="field" type="tel" inputmode="numeric" autocomplete="off" placeholder="Nomor login">
+    <p class="msg" id="pesanLogin"></p>
+    <button class="btn" id="masuk" type="button">Masuk</button>
+  </div>
+</section>
+
+<div id="viewApp" hidden>
+  <aside class="sidebar" id="sidebar" hidden>
+    <div class="label">Divisi</div>
+    <nav class="nav" id="navDivisi"></nav>
+  </aside>
+
+  <main class="content">
+    <header class="head">
+      <button class="toggle" id="toggleSide" type="button" aria-label="Buka atau tutup daftar divisi" hidden>‹</button>
+      <div class="grow">
+        <div class="label">Periode November 2026</div>
+        <h1 id="judul"></h1>
+      </div>
+      <div class="who">
+        <div class="label">Login sebagai</div>
+        <div id="namaLogin" style="font-weight:600"></div>
+        <button class="btn ghost" id="keluar" type="button">Keluar</button>
+      </div>
+    </header>
+
+    <!-- INPUT (manager) -->
+    <section id="viewInput" class="grid2">
+      <div class="card kuning">
+        <div class="label">Karyawan</div>
+        <h2 id="namaInput">—</h2>
+        <div class="muted" id="divisiInput"></div>
+        <select id="pilihKaryawan" class="field"></select>
+      </div>
+      <div class="card">
+        <h2>Kriteria</h2>
+        <div class="stack" id="kriteriaWrap"></div>
+        <p class="msg" id="pesan"></p>
+        <button class="btn" id="simpan" type="button">Simpan penilaian</button>
+      </div>
+    </section>
+
+    <!-- STATUS (manager) -->
+    <section id="viewStatus" class="stack" hidden>
+      <div class="card">
+        <div class="label">Progres penilaian saya</div>
+        <div id="progres"></div>
+      </div>
+      <div class="cards2" id="kartuDivisi"></div>
+      <div class="card">
+        <h2>Status semua karyawan</h2>
+        <div id="listStatus"></div>
+      </div>
+    </section>
+
+    <!-- LOG (admin) -->
+    <section id="viewLog" class="card" hidden>
+      <h2>Log penilaian masuk</h2>
+      <div class="table-wrap" id="tabelLog"></div>
+    </section>
+
+    <!-- REKAP (admin) -->
+    <section id="viewRekap" class="stack" hidden>
+      <div class="card export">
+        <h2>Export rekap</h2>
+        <p class="muted small" style="margin:0">Pilih divisi lalu buat file. Hasilnya spreadsheet berisi rekap akhir.</p>
+        <select id="pilihExport" class="field"></select>
+        <button class="btn" id="buatExport" type="button">Buat file rekap</button>
+        <p class="msg" id="pesanExport"></p>
+      </div>
+      <div class="card">
+        <h2>Rekap per karyawan</h2>
+        <div class="table-wrap" id="tabelRekap"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottombar" id="bottombar" hidden></nav>
+
+<script>
+const $ = id => document.getElementById(id);
+const HURUF = {4:'A', 3:'B', 2:'C', 1:'D'};
+const KAT = [
+  {min:21, nama:'Sangat Baik', cls:'A'},
+  {min:17, nama:'Baik', cls:'B'},
+  {min:13, nama:'Cukup', cls:'C'},
+  {min:0,  nama:'Perlu Perbaikan', cls:'D'}
+];
+const S = { token:null, role:null, nama:'', menu:'', divisi:'', sideOpen:true, data:null, rekap:null, log:null, draft:{} };
+
+function h(tag, cls, teks){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (teks !== undefined && teks !== null) e.textContent = teks;
+  return e;
+}
+function pesan(id, teks, err){
+  const m = $(id);
+  m.textContent = teks || '';
+  m.className = 'msg' + (teks ? (err ? ' err' : ' ok') : '');
+}
+function panggil(fn, ...args){
+  return new Promise((resolve, reject) => {
+    google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(e => reject(new Error((e && e.message) || String(e))))
+      [fn](...args);
+  });
+}
+function kategoriDari(nama){ return KAT.find(k => k.nama === nama); }
+function badgeKategori(nama){
+  const k = kategoriDari(nama);
+  return h('span', 'badge ' + (k ? k.cls : ''), nama);
+}
+function tabel(head, rows){
+  const t = h('table');
+  const tr = h('tr');
+  head.forEach(x => tr.appendChild(h('th', '', x)));
+  t.appendChild(h('thead')).appendChild(tr);
+  const tb = h('tbody');
+  rows.forEach(r => {
+    const row = h('tr');
+    r.forEach(c => {
+      const td = h('td');
+      if (c instanceof Node) td.appendChild(c); else td.textContent = c;
+      row.appendChild(td);
+    });
+    tb.appendChild(row);
+  });
+  t.appendChild(tb);
+  return t;
+}
+function legendRow(warna, teks, angka){
+  const r = h('div', 'legend-row');
+  const sw = h('span', 'sw');
+  sw.style.background = warna;
+  r.append(sw, h('span', '', teks), h('strong', '', String(angka)));
+  return r;
+}
+
+/* ---------- LOGIN ---------- */
+async function masuk(){
+  const pin = $('pin').value.trim();
+  if (!pin) return pesan('pesanLogin', 'Masukkan nomor login.', true);
+  $('masuk').disabled = true;
+  try {
+    const r = await panggil('apiLogin', pin);
+    Object.assign(S, {
+      token: r.token, role: r.role, nama: r.nama,
+      menu: r.role === 'admin' ? 'log' : 'input',
+      divisi: '', sideOpen: true, draft: {}
+    });
+    await muatData();
+    $('pin').value = '';
+    pesan('pesanLogin', '');
+    render();
+  } catch (e) {
+    S.token = null;
+    pesan('pesanLogin', e.message, true);
+  } finally {
+    $('masuk').disabled = false;
+  }
+}
+
+async function keluar(){
+  try { if (S.token) await panggil('apiLogout', S.token); } catch (e) {}
+  Object.assign(S, { token:null, role:null, nama:'', data:null, rekap:null, log:null, draft:{}, divisi:'' });
+  render();
+}
+
+/* ---------- AMBIL DATA ---------- */
+async function muatData(){
+  if (S.role === 'admin') {
+    const [rekap, log] = await Promise.all([
+      panggil('apiRekapAdmin', S.token),
+      panggil('apiLogAdmin', S.token)
+    ]);
+    S.rekap = rekap;
+    S.log = log;
+  } else {
+    S.data = await panggil('apiDataAwal', S.token);
+    if (!S.divisi) S.divisi = S.data.divisi[0];
+  }
+}
+
+/* ---------- RENDER UTAMA ---------- */
+function render(){
+  const masuk = !!S.token;
+  $('viewLogin').hidden = masuk;
+  $('viewApp').hidden = !masuk;
+  if (!masuk) { $('bottombar').hidden = true; return; }
+
+  const admin = S.role === 'admin';
+  const menu = admin
+    ? [['log', 'Log penilaian'], ['rekap', 'Rekap karyawan']]
+    : [['input', 'Input data'], ['status', 'Status penilaian']];
+  if (!menu.some(m => m[0] === S.menu)) S.menu = menu[0][0];
+
+  $('namaLogin').textContent = S.nama;
+  const bar = $('bottombar');
+  bar.hidden = false;
+  bar.replaceChildren();
+  menu.forEach(([id, label]) => {
+    const b = h('button', '', label);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(id === S.menu));
+    b.onclick = () => { S.menu = id; render(); window.scrollTo(0, 0); };
+    bar.appendChild(b);
+  });
+  $('judul').textContent = menu.find(m => m[0] === S.menu)[1];
+
+  const view = { input:'viewInput', status:'viewStatus', log:'viewLog', rekap:'viewRekap' };
+  Object.values(view).forEach(v => { $(v).hidden = true; });
+  $(view[S.menu]).hidden = false;
+
+  // Sidebar divisi hanya di Input data untuk manager
+  const sideOn = !admin && S.menu === 'input';
+  const tampilSide = sideOn && S.sideOpen;
+  $('toggleSide').hidden = !sideOn;
+  $('toggleSide').textContent = S.sideOpen ? '‹' : '›';
+  $('sidebar').hidden = !tampilSide;
+  if (tampilSide) renderNav();
+
+  if (S.menu === 'input') renderInput();
+  if (S.menu === 'status') renderStatus();
+  if (S.menu === 'log') renderLog();
+  if (S.menu === 'rekap') renderRekap();
+}
+
+function renderNav(){
+  const nav = $('navDivisi');
+  nav.replaceChildren();
+  S.data.divisi.forEach(d => {
+    const b = h('button', '', d);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(d === S.divisi));
+    b.onclick = () => { S.divisi = d; render(); };
+    nav.appendChild(b);
+  });
+}
+
+/* ---------- MANAGER: INPUT ---------- */
+function nilaiAwal(kid){
+  const s = S.data.nilaiSaya.find(x => x.karyawanId === kid);
+  return s ? s.nilai.map(v => typeof v === 'number' ? v : null) : [null, null, null, null, null, null];
+}
+
+function renderInput(){
+  const sel = $('pilihKaryawan');
+  const lama = sel.value;
+  const daftar = S.data.karyawan.filter(k => k.divisi === S.divisi);
+  sel.replaceChildren();
+  daftar.forEach(k => { const o = h('option', '', k.nama); o.value = k.id; sel.appendChild(o); });
+  if (!daftar.length) {
+    $('namaInput').textContent = '—';
+    $('divisiInput').textContent = '';
+    $('kriteriaWrap').replaceChildren();
+    return;
+  }
+  const k = daftar.find(x => x.id === lama) || daftar[0];
+  sel.value = k.id;
+  $('namaInput').textContent = k.nama;
+  $('divisiInput').textContent = k.divisi;
+  if (!S.draft[k.id]) S.draft[k.id] = nilaiAwal(k.id);
+  renderKriteria(k);
+}
+
+function renderKriteria(k){
+  const wrap = $('kriteriaWrap');
+  wrap.replaceChildren();
+  const dr = S.draft[k.id];
+  S.data.kriteria[k.divisi].forEach((lbl, i) => {
+    const row = h('div', 'crit');
+    row.appendChild(h('div', 'crit-nama', lbl));
+    const sc = h('div', 'scale');
+    [4, 3, 2, 1].forEach(n => {
+      const b = h('button', '', HURUF[n]);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(dr[i] === n));
+      b.onclick = () => { dr[i] = n; pesan('pesan', ''); renderKriteria(k); };
+      sc.appendChild(b);
+    });
+    row.appendChild(sc);
+    wrap.appendChild(row);
+  });
+}
+
+async function simpan(){
+  const kid = $('pilihKaryawan').value;
+  if (!kid) return;
+  const dr = S.draft[kid] || [];
+  const kurang = dr.filter(v => typeof v !== 'number').length;
+  if (kurang) return pesan('pesan', 'Masih ada ' + kurang + ' kriteria yang belum dinilai.', true);
+  $('simpan').disabled = true;
+  try {
+    const teks = await panggil('apiSimpanNilai', S.token, kid, dr);
+    await muatData();
+    render();
+    pesan('pesan', teks);
+  } catch (e) {
+    pesan('pesan', e.message, true);
+  } finally {
+    $('simpan').disabled = false;
+  }
+}
+
+/* ---------- MANAGER: STATUS ---------- */
+function jumlahTerisi(k){
+  const s = S.data.nilaiSaya.find(x => x.karyawanId === k.id);
+  return s ? s.nilai.filter(v => typeof v === 'number').length : 0;
+}
+function jumlahKriteria(k){ return S.data.kriteria[k.divisi].length; }
+function selesai(k){ return jumlahTerisi(k) >= jumlahKriteria(k); }
+
+function renderStatus(){
+  const semua = S.data.karyawan;
+  const n = semua.filter(selesai).length;
+  const pct = semua.length ? Math.round(n / semua.length * 100) : 0;
+
+  const box = $('progres');
+  box.replaceChildren();
+  const wrap = h('div', 'donut-wrap');
+  const donut = h('div', 'donut');
+  donut.style.background = 'conic-gradient(var(--side) 0 ' + pct + '%, #efe9d8 ' + pct + '% 100%)';
+  const hole = h('div', 'hole');
+  hole.append(h('strong', '', n + '/' + semua.length), h('span', '', 'selesai'));
+  donut.appendChild(hole);
+  const legend = h('div', 'legend');
+  legend.append(legendRow('var(--side)', 'Sudah dinilai', n), legendRow('#efe9d8', 'Belum dinilai', semua.length - n));
+  wrap.append(donut, legend);
+  box.appendChild(wrap);
+
+  const cards = $('kartuDivisi');
+  cards.replaceChildren();
+  const warna = ['kuning', 'biru', 'pink', 'hijau', 'kuning', 'biru'];
+  S.data.divisi.forEach((d, i) => {
+    const anggota = semua.filter(k => k.divisi === d);
+    const c = h('div', 'card ' + warna[i % warna.length]);
+    c.append(
+      h('div', 'label', d),
+      h('div', 'big', anggota.filter(selesai).length + '/' + anggota.length),
+      h('div', 'small', 'sudah dinilai')
+    );
+    cards.appendChild(c);
+  });
+
+  const list = $('listStatus');
+  list.replaceChildren();
+  semua.forEach(k => {
+    const t = jumlahKriteria(k), v = jumlahTerisi(k);
+    const st = v === 0 ? h('span', 'badge D', 'Belum dinilai')
+      : v < t ? h('span', 'badge B', 'Sebagian ' + v + '/' + t)
+      : h('span', 'badge A', 'Sudah dinilai');
+    const row = h('div', 'kv');
+    row.append(h('span', '', k.nama + ' · ' + k.divisi), st);
+    list.appendChild(row);
+  });
+}
+
+/* ---------- ADMIN: LOG & REKAP ---------- */
+function renderLog(){
+  const box = $('tabelLog');
+  box.replaceChildren();
+  box.appendChild(tabel(
+    ['Tanggal', 'Manager', 'Karyawan', 'Divisi', 'Hasil'],
+    S.log.map(r => [r.tanggal, r.manager, r.karyawan, r.divisi,
+      h('span', 'badge ' + (kategoriDari(r.kategori) ? kategoriDari(r.kategori).cls : ''),
+        Number(r.total).toFixed(0) + ' · ' + r.kategori)])
+  ));
+}
+
+function renderRekap(){
+  const sel = $('pilihExport');
+  const lama = sel.value;
+  sel.replaceChildren();
+  ['Semua', ...new Set(S.rekap.map(r => r.divisi))].forEach(d => {
+    const o = h('option', '', d === 'Semua' ? 'Semua divisi' : d);
+    o.value = d;
+    sel.appendChild(o);
+  });
+  if (lama) sel.value = lama;
+
+  const box = $('tabelRekap');
+  box.replaceChildren();
+  box.appendChild(tabel(
+    ['Divisi', 'Nama', 'Jml manager', 'Skor', 'Kategori'],
+    S.rekap.map(r => [
+      r.divisi,
+      r.nama,
+      String(r.jumlahManager),
+      r.total === null ? '—' : Number(r.total).toFixed(2),
+      r.kategori === 'Belum dinilai' ? h('span', 'muted', r.kategori) : badgeKategori(r.kategori)
+    ])
+  ));
+}
+
+async function buatExport(){
+  const d = $('pilihExport').value;
+  $('buatExport').disabled = true;
+  pesan('pesanExport', 'Membuat file…');
+  try {
+    const r = await panggil('apiExportDivisi', S.token, d);
+    const box = $('pesanExport');
+    box.replaceChildren();
+    const a = h('a', '', 'Buka rekap, lalu File → Download → Microsoft Excel');
+    a.href = r.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    box.appendChild(a);
+  } catch (e) {
+    pesan('pesanExport', e.message, true);
+  } finally {
+    $('buatExport').disabled = false;
+  }
+}
+
+/* ---------- EVENT ---------- */
+$('masuk').onclick = masuk;
+$('pin').onkeydown = e => { if (e.key === 'Enter') masuk(); };
+$('keluar').onclick = keluar;
+$('toggleSide').onclick = () => { S.sideOpen = !S.sideOpen; render(); };
+$('pilihKaryawan').onchange = () => { pesan('pesan', ''); renderInput(); };
+$('simpan').onclick = simpan;
+$('buatExport').onclick = buatExport;
+
+render();
+</script>
+</body>
+</html>
