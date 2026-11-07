@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rapor Karyawan</title>
+<meta name="application-name" content="Rapor Karyawan">
+<meta name="theme-color" content="#111111">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rapor Karyawan">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{--bg:#f7f2e4;--card:#fff;--ink:#171717;--muted:#6d6a62;--line:#e7e1cf;--side:#111;--side-ink:#d9d6cd;--yellow:#f6dc7d;--blue:#c5d6f7;--pink:#f4c4e0;--green:#cfe9b4;color-scheme:light}
@@ -206,13 +212,25 @@ function pesan(id, teks, err){
   m.textContent = teks || '';
   m.className = 'msg' + (teks ? (err ? ' err' : ' ok') : '');
 }
-function panggil(fn, ...args){
-  return new Promise((resolve, reject) => {
-    google.script.run
-      .withSuccessHandler(resolve)
-      .withFailureHandler(e => reject(new Error((e && e.message) || String(e))))
-      [fn](...args);
-  });
+// Alamat deployment Apps Script (/exec). Ganti jika deployment baru dibuat.
+const API_URL = "https://script.google.com/macros/s/AKfycbyTppTpnpBJdO5ez3lA7BwgdLzBOf15dqPUoGGcJ_Hy-oYDJn7xHHrf9HUuejc8dybj/exec";
+async function panggil(fn, ...args){
+  let res;
+  try {
+    // text/plain menghindari preflight CORS
+    res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ fn: fn, args: args })
+    });
+  } catch (e) {
+    throw new Error('Tidak bisa terhubung ke server. Periksa koneksi internet.');
+  }
+  let body;
+  try { body = await res.json(); }
+  catch (e) { throw new Error('Respons server tidak valid.'); }
+  if (!body.ok) throw new Error(body.error || 'Terjadi kesalahan.');
+  return body.data;
 }
 function kategoriDari(nama){ return KAT.find(k => k.nama === nama); }
 function badgeKategori(nama){
