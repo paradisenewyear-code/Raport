@@ -14,40 +14,45 @@ h1{font-size:24px}
 h2{font-size:18px}
 .label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .muted{color:var(--muted)}
-.small{font-size:13px}
+.small{font-size:12px}
 .msg{font-size:14px;min-height:1.4em;margin:0}
 .msg.err{color:#b3261e}
 .msg.ok{color:#2e6b1f}
 [hidden]{display:none!important}
-.content{padding-top:16px;padding-bottom:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
-/* Sidebar divisi */
-.sidebar{background:var(--side);color:var(--side-ink);padding:14px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:8px}
-.sidebar .label{color:#8a877f}
-.nav{display:flex;gap:6px;overflow-x:auto}
-.nav button{white-space:nowrap;background:transparent;color:var(--side-ink);border:0;border-radius:999px;padding:12px 16px;min-height:44px;font:inherit;cursor:pointer}
-.nav button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:600}
+/* Layout: sidebar kiri, konten kanan. Admin tanpa sidebar. */
+#viewApp{display:grid;grid-template-columns:116px minmax(0,1fr);min-height:100vh}
+#viewApp.solo{grid-template-columns:minmax(0,1fr)}
+.sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--side);color:var(--side-ink);padding:max(14px,env(safe-area-inset-top,0px)) 8px 110px 8px;display:flex;flex-direction:column;gap:8px}
+.sidebar .label{color:#8a877f;padding-left:4px}
+.nav{display:grid;gap:6px}
+.nav button{display:grid;gap:2px;text-align:left;background:transparent;color:var(--side-ink);border:0;border-radius:14px;padding:10px 10px;min-height:52px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.nav button .sub{font-size:11px;font-weight:500;color:#8a877f}
+.nav button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.nav button[aria-pressed="true"] .sub{color:var(--muted)}
+.nav button:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 
-/* Header */
-.head{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
-.grow{flex:1 1 200px;display:grid;gap:6px}
+.content{padding-top:16px;padding-bottom:24px;padding-left:12px;padding-right:max(12px,env(safe-area-inset-right,0px));min-width:0}
+.content.login{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.head{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px}
+.grow{flex:1 1 160px;display:grid;gap:6px}
 .who{display:grid;gap:4px;justify-items:start}
-.toggle{width:44px;height:44px;border-radius:50%;border:0;background:var(--side);color:#fff;font:inherit;font-size:22px;cursor:pointer;flex:0 0 auto}
+.stack{display:grid;gap:14px}
+.stack-lg{display:grid;gap:18px}
+.grid2{display:grid;gap:14px;grid-template-columns:1fr;align-items:start}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.between{justify-content:space-between}
 
-/* Tombol, kartu, field */
 .btn{font:inherit;font-weight:600;background:var(--side);color:#fff;border:0;border-radius:999px;padding:12px 22px;cursor:pointer;min-height:44px;justify-self:start}
 .btn:disabled{opacity:.5}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink);padding:8px 16px;font-size:14px;min-height:0}
 .field{font:inherit;color:var(--ink);background:#fff;border:0;border-radius:14px;padding:13px 16px;width:100%;min-height:48px}
-.card{background:var(--card);border-radius:18px;padding:18px;display:grid;gap:12px;align-content:start;min-width:0}
+.card{background:var(--card);border-radius:18px;padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
 .card.kuning{background:var(--yellow)}
 .card.biru{background:var(--blue)}
 .card.pink{background:var(--pink)}
 .card.hijau{background:var(--green)}
-.stack{display:grid;gap:14px}
-.grid2{display:grid;gap:14px;grid-template-columns:1fr;align-items:start}
-.cards2{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
-.big{font-size:40px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.big{font-size:36px;font-weight:700;line-height:1;letter-spacing:-.02em}
 .export{display:grid;gap:10px}
 
 /* Input nilai */
@@ -64,10 +69,10 @@ h2{font-size:18px}
 .badge.B{background:var(--blue)}
 .badge.C{background:var(--yellow)}
 .badge.D{background:var(--pink)}
-.donut-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-.donut{width:150px;height:150px;border-radius:50%;position:relative;flex:0 0 auto}
-.hole{position:absolute;inset:26px;background:#fff;border-radius:50%;display:grid;place-items:center;align-content:center;text-align:center}
-.hole strong{font-size:24px}
+.donut-wrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.donut{width:140px;height:140px;border-radius:50%;position:relative;flex:0 0 auto}
+.hole{position:absolute;inset:24px;background:#fff;border-radius:50%;display:grid;place-items:center;align-content:center;text-align:center}
+.hole strong{font-size:22px}
 .hole span{font-size:12px;color:var(--muted)}
 .legend{display:grid;gap:8px}
 .legend-row{display:flex;gap:10px;align-items:center;font-size:14px}
@@ -75,7 +80,7 @@ h2{font-size:18px}
 .sw{width:12px;height:12px;border-radius:4px;flex:0 0 auto}
 .kv{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:14px}
 .kv:first-child{border-top:0}
-.kv>span:first-child{font-weight:600}
+.kv>span:first-child{font-weight:600;min-width:0}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 th,td{text-align:left;padding:10px 6px;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap;vertical-align:middle}
@@ -87,6 +92,8 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
 .bottombar button[aria-pressed="true"]{background:#fff;color:var(--ink)}
 
 @media (min-width:900px){
+  #viewApp{grid-template-columns:200px minmax(0,1fr)}
+  .content{padding-left:24px;padding-right:24px}
   .grid2{grid-template-columns:1fr 1.25fr}
   .bottombar{left:50%;right:auto;width:min(560px,calc(100% - 40px));transform:translateX(-50%);border-radius:999px;bottom:16px;padding:6px}
 }
@@ -95,7 +102,7 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
 <body>
 
 <!-- LOGIN -->
-<section id="viewLogin" class="content" style="max-width:420px;margin:8vh auto 0">
+<section id="viewLogin" class="content login" style="max-width:420px;margin:8vh auto 0">
   <div class="card">
     <div class="label">Login</div>
     <h1>Masukkan nomor login</h1>
@@ -106,14 +113,13 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
 </section>
 
 <div id="viewApp" hidden>
-  <aside class="sidebar" id="sidebar" hidden>
+  <aside class="sidebar" id="sidebar" aria-label="Divisi">
     <div class="label">Divisi</div>
     <nav class="nav" id="navDivisi"></nav>
   </aside>
 
   <main class="content">
     <header class="head">
-      <button class="toggle" id="toggleSide" type="button" aria-label="Buka atau tutup daftar divisi" hidden>‹</button>
       <div class="grow">
         <div class="label">Periode November 2026</div>
         <h1 id="judul"></h1>
@@ -142,12 +148,11 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
     </section>
 
     <!-- STATUS (manager) -->
-    <section id="viewStatus" class="stack" hidden>
+    <section id="viewStatus" class="stack-lg" hidden>
       <div class="card">
         <div class="label">Progres penilaian saya</div>
         <div id="progres"></div>
       </div>
-      <div class="cards2" id="kartuDivisi"></div>
       <div class="card">
         <h2>Status semua karyawan</h2>
         <div id="listStatus"></div>
@@ -161,7 +166,7 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
     </section>
 
     <!-- REKAP (admin) -->
-    <section id="viewRekap" class="stack" hidden>
+    <section id="viewRekap" class="stack-lg" hidden>
       <div class="card export">
         <h2>Export rekap</h2>
         <p class="muted small" style="margin:0">Pilih divisi lalu buat file. Hasilnya spreadsheet berisi rekap akhir.</p>
@@ -183,12 +188,12 @@ th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute
 const $ = id => document.getElementById(id);
 const HURUF = {4:'A', 3:'B', 2:'C', 1:'D'};
 const KAT = [
-  {min:21, nama:'Sangat Baik', cls:'A'},
+  {min:21, nama:'Sangat baik', cls:'A'},
   {min:17, nama:'Baik', cls:'B'},
   {min:13, nama:'Cukup', cls:'C'},
   {min:0,  nama:'Perlu Perbaikan', cls:'D'}
 ];
-const S = { token:null, role:null, nama:'', menu:'', divisi:'', sideOpen:true, data:null, rekap:null, log:null, draft:{} };
+const S = { token:null, role:null, nama:'', menu:'', divisi:'', data:null, rekap:null, log:null, draft:{} };
 
 function h(tag, cls, teks){
   const e = document.createElement(tag);
@@ -250,7 +255,7 @@ async function masuk(){
     Object.assign(S, {
       token: r.token, role: r.role, nama: r.nama,
       menu: r.role === 'admin' ? 'log' : 'input',
-      divisi: '', sideOpen: true, draft: {}
+      divisi: '', draft: {}
     });
     await muatData();
     $('pin').value = '';
@@ -293,6 +298,9 @@ function render(){
   if (!masuk) { $('bottombar').hidden = true; return; }
 
   const admin = S.role === 'admin';
+  $('viewApp').classList.toggle('solo', admin);
+  $('sidebar').hidden = admin;
+
   const menu = admin
     ? [['log', 'Log penilaian'], ['rekap', 'Rekap karyawan']]
     : [['input', 'Input data'], ['status', 'Status penilaian']];
@@ -315,27 +323,24 @@ function render(){
   Object.values(view).forEach(v => { $(v).hidden = true; });
   $(view[S.menu]).hidden = false;
 
-  // Sidebar divisi hanya di Input data untuk manager
-  const sideOn = !admin && S.menu === 'input';
-  const tampilSide = sideOn && S.sideOpen;
-  $('toggleSide').hidden = !sideOn;
-  $('toggleSide').textContent = S.sideOpen ? '‹' : '›';
-  $('sidebar').hidden = !tampilSide;
-  if (tampilSide) renderNav();
-
+  if (!admin) renderNav();
   if (S.menu === 'input') renderInput();
   if (S.menu === 'status') renderStatus();
   if (S.menu === 'log') renderLog();
   if (S.menu === 'rekap') renderRekap();
 }
 
+// Sidebar kiri: daftar divisi dengan jumlah karyawan yang sudah dinilai
 function renderNav(){
   const nav = $('navDivisi');
   nav.replaceChildren();
   S.data.divisi.forEach(d => {
-    const b = h('button', '', d);
+    const anggota = S.data.karyawan.filter(k => k.divisi === d);
+    const n = anggota.filter(selesai).length;
+    const b = h('button', '');
     b.type = 'button';
     b.setAttribute('aria-pressed', String(d === S.divisi));
+    b.append(h('span', '', d), h('span', 'sub', n + '/' + anggota.length + ' sudah'));
     b.onclick = () => { S.divisi = d; render(); };
     nav.appendChild(b);
   });
@@ -432,20 +437,6 @@ function renderStatus(){
   wrap.append(donut, legend);
   box.appendChild(wrap);
 
-  const cards = $('kartuDivisi');
-  cards.replaceChildren();
-  const warna = ['kuning', 'biru', 'pink', 'hijau', 'kuning', 'biru'];
-  S.data.divisi.forEach((d, i) => {
-    const anggota = semua.filter(k => k.divisi === d);
-    const c = h('div', 'card ' + warna[i % warna.length]);
-    c.append(
-      h('div', 'label', d),
-      h('div', 'big', anggota.filter(selesai).length + '/' + anggota.length),
-      h('div', 'small', 'sudah dinilai')
-    );
-    cards.appendChild(c);
-  });
-
   const list = $('listStatus');
   list.replaceChildren();
   semua.forEach(k => {
@@ -520,7 +511,6 @@ async function buatExport(){
 $('masuk').onclick = masuk;
 $('pin').onkeydown = e => { if (e.key === 'Enter') masuk(); };
 $('keluar').onclick = keluar;
-$('toggleSide').onclick = () => { S.sideOpen = !S.sideOpen; render(); };
 $('pilihKaryawan').onchange = () => { pesan('pesan', ''); renderInput(); };
 $('simpan').onclick = simpan;
 $('buatExport').onclick = buatExport;
